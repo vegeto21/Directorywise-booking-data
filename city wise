@@ -1,0 +1,201 @@
+
+import time
+import json
+import urllib.request
+from selenium import webdriver
+from PIL import Image
+import csv
+import pandas as pd
+import itertools
+import os
+from selenium.common.exceptions import NoSuchElementException
+from requests import get
+driver = webdriver.Chrome()
+driver.get("https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1DCAEoggI46AdIM1gEaGyIAQGYAQm4ARnIAQzYAQPoAQGIAgGoAgO4Ar6p9-gFwAIB&lang=en-gb&sb=1&src=searchresults&src_elem=sb&error_url=https%3A%2F%2Fwww.booking.com%2Fsearchresults.en-gb.html%3Flabel%3Dgen173nr-1DCAEoggI46AdIM1gEaGyIAQGYAQm4ARnIAQzYAQPoAQGIAgGoAgO4Ar6p9-gFwAIB%3Btmpl%3Dsearchresults%3Bac_click_type%3Db%3Bac_position%3D0%3Bcheckin_month%3D7%3Bcheckin_monthday%3D5%3Bcheckin_year%3D2019%3Bcheckout_month%3D7%3Bcheckout_monthday%3D6%3Bcheckout_year%3D2019%3Bcity%3D-2601889%3Bclass_interval%3D1%3Bdest_id%3D-2104211%3Bdest_type%3Dcity%3Bdtdisc%3D0%3Bfrom_sf%3D1%3Bgroup_adults%3D1%3Bgroup_children%3D0%3Binac%3D0%3Bindex_postcard%3D0%3Blabel_click%3Dundef%3Bno_rooms%3D1%3Boffset%3D0%3Bpostcard%3D0%3Braw_dest_type%3Dcity%3Broom1%3DA%3Bsb_price_type%3Dtotal%3Bsearch_selected%3D1%3Bshw_aparth%3D1%3Bslp_r_match%3D0%3Bsrc%3Dsearchresults%3Bsrc_elem%3Dsb%3Bsrpvid%3D6d5252a0f1240035%3Bss%3DMathura%252C%2520Uttar%2520Pradesh%252C%2520India%3Bss_all%3D0%3Bss_raw%3Dmathura%3Bssb%3Dempty%3Bsshis%3D0%3Bssne%3DLondon%3Bssne_untouched%3DLondon%26%3B&ss=London%2C+Greater+London%2C+United+Kingdom&is_ski_area=0&ssne=Mathura&ssne_untouched=Mathura&city=-2104211&checkin_year=2019&checkin_month=7&checkin_monthday=7&checkout_year=2019&checkout_month=7&checkout_monthday=8&group_adults=1&group_children=0&no_rooms=1&from_sf=1&ac_position=0&ac_langcode=en&ac_click_type=b&dest_id=-2601889&dest_type=city&iata=LON&place_id_lat=51.507391&place_id_lon=-0.127634&search_pageview_id=6d5252a0f1240035&search_selected=true&ss_raw=london")
+
+name=[]
+star=[]
+rating=[]
+review=[]
+grvle=[]
+price=[]
+freecan=[]
+lasbokings=[]
+latest=[]
+breakin=[]
+nopre=[]
+prefferd=[]
+distfrcen=[]
+mrp=[]
+imge=[]
+time.sleep(1)
+dict={}
+os.mkdir("/home/piyush/PycharmProjects/untitled/UK/london")
+while 23:
+    time.sleep(10)
+    st = driver.find_elements_by_css_selector("div.sr_item.sr_item_new.sr_item_default.sr_property_block.sr_flex_layout")
+
+    
+
+    for j in st:
+
+        st0=j.find_element_by_css_selector("span.sr-hotel__name").text
+        st0 = st0.replace('/', '-')
+        dict['name']=st0
+        print(st0)
+        name.append(st0)
+
+
+        try:
+            st1=j.find_element_by_css_selector("i.bk-icon-wrapper.bk-icon-stars.star_track").get_attribute('title')
+            print(st1)
+            star.append(st1)
+            dict['star']=st1
+        except:
+            star.append("not avai")
+            print("xx")
+            dict['star']="not avail"
+        try:
+            st2=j.find_element_by_css_selector("div.bui-review-score__badge").text
+            rating.append(st2)
+            dict['rating']=st2
+            print(st2)
+
+        except:
+            rating.append("not avai")
+            dict['rating']="not avail"
+        try:
+            st3=j.find_element_by_css_selector("div.bui-review-score__text").text
+            review.append(st3)
+            print(st3)
+            dict['review']=st3
+
+        except:
+            review.append("not avai")
+            dict['review']="not avai"
+
+        try:
+            st4=j.find_element_by_css_selector("div.bui-price-display__value.prco-inline-block-maker-helper ").text
+            price.append(st4[1:])
+            dict['price']=st4
+
+        except:
+            price.append("not avai")
+            dict['price']="not avai"
+        try:
+            s5=j.find_element_by_css_selector("span.distfromdest.jq_tooltip").text
+            distfrcen.append(s5)
+            print(s5)
+            dict['distfromcentre']=s5
+        except:
+            distfrcen.append("not avai")
+            dict['distfromcentre'] = "not avail"
+        try:
+            s6=j.find_element_by_css_selector("div.bui-price-display__original.prco-inline-block-maker-helper").text
+            mrp.append(s6[1:])
+            dict['mrp']=s6
+            print(s6)
+        except:
+            mrp.append("not avai")
+            dict['mrp'] = "not avail"
+        try:
+            s7=j.find_element_by_css_selector("img.hotel_image")
+            stre=s7.get_attribute('src')
+            imge.append(stre)
+        except:
+            imge.append("not avail")
+        try:
+            st16 = j.find_element_by_css_selector("div.rollover-s1.lastbooking").text
+            dict['last bookings'] = st16
+            lasbokings.append(st16)
+            print(st16)
+        except:
+
+            dict['last bookings'] = "not avail"
+            lasbokings.append("not avail")
+        try:
+            st17 = j.find_element_by_css_selector("div.rollover-s2.sr--x-times-last-time").text
+            dict['latest booking'] = st17
+            latest.append(st17)
+        except:
+            dict['latest booking'] = "not avail"
+            latest.append("not avail")
+
+        try:
+            frct = 0
+            brin = 0
+            nopr = 0
+            st7 = j.find_elements_by_css_selector("sup.sr_room_reinforcement")
+
+            for llk in st7:
+                print(llk.text)
+                if llk.text == "FREE cancellation":
+                    dict['free cancelation'] = "Yes"
+                    freecan.append("Yes")
+                    frct = frct + 1
+                if llk.text == "Breakfast included":
+                    dict['Breakfast included'] = "Yes"
+                    breakin.append("Yes")
+                    brin = brin + 1
+                if llk.text == "No prepayment needed":
+                    dict['No prepayment needed'] = "Yes"
+                    nopre.append("Yes")
+                    nopr=nopr+1
+
+            if frct == 0:
+                dict['free cancelation'] = "No"
+                freecan.append("No")
+            if brin == 0:
+                dict['Breakfast included'] = "No"
+                breakin.append("No")
+            if nopr == 0:
+                dict['No prepayment needed'] = "No"
+                nopre.append("No")
+
+
+
+
+
+        except:
+            dict['free cancelation'] = "NO"
+            freecan.append("NO")
+            dict['Breakfast included'] = "NO"
+            breakin.append("NO")
+            nopre.append("not avail")
+            dict['No prepayment needed'] = "No"
+            nopre.append("No")
+        try:
+
+            st8 = j.find_element_by_css_selector("svg.bk-icon.-iconset-thumbs_up_square.pp-icon-valign--tbottom")
+            dict['preferd partner property'] = "Yes"
+            prefferd.append("Yes")
+        except:
+            dict['preferd partner property'] = "No"
+            prefferd.append("No")
+        try:
+
+            st9 = j.find_element_by_css_selector("div.sr-badges__row")
+            dict['great value today'] = "yes"
+            grvle.append("Yes")
+        except:
+            dict['great value today'] = "No"
+            grvle.append("No")
+        with open(st0, 'w') as json_file:
+            json.dump(dict, json_file)
+
+
+    try:
+        driver.find_element_by_css_selector("#search_results_table > div.bui-pagination.results-paging > nav > ul > li.bui-pagination__item.bui-pagination__next-arrow.bui-pagination__item--disabled")
+        break
+    except:
+        driver.find_element_by_css_selector("#search_results_table > div.bui-pagination.results-paging > nav > ul > li.bui-pagination__item.bui-pagination__next-arrow").click()
+
+
+
+print(mrp)
+hotel_data=pd.DataFrame({"name":name,"star":star,"rating":rating,"review":review,"price":price,"distofcent":distfrcen,"mrp":mrp,"great value":grvle,"free cancellation":freecan,"breakfast":breakin,"no prepayment":nopre,"last 1 booking":latest,"latest bookings":lasbokings})
+hotel_data.to_csv("ldn.csv")
+urllib.request.urlretrieve(imge[0], "file1")
+time.sleep(3)
+im = Image.open("file1").convert("RGB")
+im.save("test.jpg","jpeg")
